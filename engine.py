@@ -15,7 +15,7 @@ RIGHT_EYE_POINTS = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159
 
 mp_face_mesh = mediapipe_solutions.face_mesh
 cap = cv2.VideoCapture(0)
-
+# test image: "D:/DGW_data_save/val/Sub143_vid1_frame420.png"
 face_mesh = mp_face_mesh.FaceMesh(max_num_faces=1, min_detection_confidence=0.5, min_tracking_confidence=0.5)
 start_time = time.time()
 
@@ -47,6 +47,13 @@ while cap.isOpened():
         right_eye_position, right_color = eye_tracking.get_eye_position(right_eye_cut_image)
         left_eye_position, left_color = eye_tracking.get_eye_position(left_eye_cut_image)
 
+        if right_eye_position == "LEFT":
+            left_eye_position = "LEFT"
+            left_color = [(0, 255, 0), (0, 0, 0)]
+        if left_eye_position == "RIGHT":
+            right_eye_position = "RIGHT"
+            right_color = [(0, 255, 0), (0, 0, 0)]
+
         utils.draw_text(frame, f'Right eye: {right_eye_position}', FONTS, 0.7, (20, 120), 2, right_color[0], right_color[1], 8, 8)
         utils.draw_text(frame, f'Left eye: {left_eye_position}', FONTS, 0.7, (20, 190), 2, left_color[0], left_color[1], 8, 8)
 
@@ -55,7 +62,7 @@ while cap.isOpened():
     frame = utils.draw_text(frame, f'FPS: {round(fps, 1)}', FONTS, 1.0, (20, 50), text_thickness=2)
     cv2.imshow('frame', frame)
     key = cv2.waitKey(1)
-    if (key == ord('q')) or (key == ord('Q')):
+    if (key == ord('q')) or (key == ord('Q')) or (key == ord('Й')) or (key == ord('й')):
         break
 
 cap.release()

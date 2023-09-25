@@ -72,6 +72,7 @@ def get_cut_eyes_images(image, left_eye_coordinates, right_eye_coordinates):
 def get_eye_position(eye_cut_image):
     eye_height, eye_width = eye_cut_image.shape
     eye_cut_image = utils.remove_noise(eye_cut_image)
+    # eye_cut_image = cv2.convertScaleAbs(eye_cut_image, alpha=1.5, beta=50)
     ret, threshold_eye_image = cv2.threshold(eye_cut_image, 130, 255, cv2.THRESH_BINARY)
     horizontal_separation = int(eye_width / 3)
 
@@ -94,12 +95,12 @@ def pixel_counter(right_image_part, center_image_part, left_image_part):
     max_index = eye_parts.index(max(eye_parts))
     if max_index == 0:
         eye_position = "RIGHT"
-        color = [(0, 255, 255), (128, 0, 128)]
+        color = [(0, 255, 0), (0, 0, 0)]
     elif max_index == 1:
         eye_position = "CENTER"
         color = [(0, 0, 0), (0, 255, 0)]
     elif max_index == 2:
         eye_position = "LEFT"
-        color = [(0, 255, 255), (128, 0, 128)]
+        color = [(0, 255, 0), (0, 0, 0)]
 
     return eye_position, color
