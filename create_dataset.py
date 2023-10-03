@@ -2,6 +2,7 @@ import cv2.cv2
 import mediapipe.python.solutions as mediapipe_solutions
 
 import os
+import shutil
 from itertools import islice
 from pathlib import Path
 
@@ -44,6 +45,16 @@ def save_dataset_result(dataset_directory_paths, dataset_result):
     return
 
 
+def sort_dataset(dataset_directory_paths, dataset_result_list, sorted_datasets):
+    for i in range(len(dataset_directory_paths)):
+        if dataset_result_list[i] == "CENTER":
+            shutil.copy(dataset_directory_train_paths[i], sorted_datasets["CENTER"])
+        elif dataset_result_list[i] == "LEFT":
+            shutil.copy(dataset_directory_train_paths[i], sorted_datasets["LEFT"])
+        elif dataset_result_list[i] == "RIGHT":
+            shutil.copy(dataset_directory_train_paths[i], sorted_datasets["RIGHT"])
+
+
 LEFT_EYE_POINTS = [362, 382, 381, 380, 374, 373, 390, 249, 263, 466, 388, 387, 386, 385, 384, 398]
 RIGHT_EYE_POINTS = [33, 7, 163, 144, 145, 153, 154, 155, 133, 173, 157, 158, 159, 160, 161, 246]
 
@@ -64,5 +75,26 @@ dataset_directory_val_paths = [i.path for i in islice(os.scandir(dataset_directo
 print(len(dataset_directory_val_paths))
 save_dataset_result(dataset_directory_val_paths, dataset_result_val)
 
+dataset_result_train = open("D:/DGW_data_save/result_train.txt", 'r')
+dataset_result_val = open("D:/DGW_data_save/result_val.txt", 'r')
+dataset_result_train_list = list(map(lambda line: line.strip(), dataset_result_train.readlines()))
+dataset_result_val_list = list(map(lambda line: line.strip(), dataset_result_val.readlines()))
 dataset_result_train.close()
 dataset_result_val.close()
+
+sorted_train_datasets = {
+    "CENTER": Path("D:/DGW_dataset/train/center"),
+    "RIGHT": Path("D:/DGW_dataset/train/right"),
+    "LEFT": Path("D:/DGW_dataset/train/left")
+}
+sorted_val_datasets = {
+    "CENTER": Path("D:/DGW_dataset/val/center"),
+    "RIGHT": Path("D:/DGW_dataset/val/left"),
+    "LEFT": Path("D:/DGW_dataset/val/right")
+}
+
+dataset_directory_train_paths = [i.path for i in islice(os.scandir(dataset_directory_train), 26496)]
+dataset_directory_val_paths = [i.path for i in islice(os.scandir(dataset_directory_val), 9382)]
+
+sort_dataset(dataset_directory_train_paths, dataset_result_train_list, sorted_train_datasets)
+sort_dataset(dataset_directory_val_paths, dataset_result_val_list, sorted_val_datasets)
